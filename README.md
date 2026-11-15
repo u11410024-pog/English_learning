@@ -170,22 +170,22 @@
   <div class="board" id="board">
     <!-- 格子 0：全聯 -->
     <div class="cell" data-index="0">
-      <img class="bg-img" src="image_08871d.jpg" alt="全聯" onerror="this.style.display='none'">
+      <img class="bg-img" src="全聯.jpg" alt="全聯" onerror="this.style.display='none'">
     </div>
 
     <!-- 格子 1：公園 -->
     <div class="cell" data-index="1">
-      <img class="bg-img" src="image_9eab4f.jpg" alt="公園" onerror="this.style.display='none'">
+      <img class="bg-img" src="公園.jpg" alt="公園" onerror="this.style.display='none'">
     </div>
 
     <!-- 格子 2：郵局 -->
     <div class="cell" data-index="2">
-      <img class="bg-img" src="image_fd0749.jpg" alt="郵局" onerror="this.style.display='none'">
+      <img class="bg-img" src="郵局.jpg" alt="郵局" onerror="this.style.display='none'">
     </div>
 
     <!-- 格子 3：圖書館 -->
     <div class="cell" data-index="3">
-      <img class="bg-img" src="image_5cbe02.jpg" alt="圖書館" onerror="this.style.display='none'">
+      <img class="bg-img" src="圖書館.jpg" alt="圖書館" onerror="this.style.display='none'">
     </div>
 
     <!-- 格子 4（正中央）：切半蛋糕 A piece of cake -->
@@ -208,19 +208,19 @@
       <span class="label">A piece of cake</span>
     </div>
 
-    <!-- 格子 5：台北榮總 -->
+    <!-- 格子 5：醫院 -->
     <div class="cell" data-index="5">
-      <img class="bg-img" src="image_f95fb1.jpg" alt="台北榮總" onerror="this.style.display='none'">
+      <img class="bg-img" src="醫院.jpg" alt="醫院" onerror="this.style.display='none'">
     </div>
 
-    <!-- 格子 6：台灣銀行 -->
+    <!-- 格子 6：銀行 -->
     <div class="cell" data-index="6">
-      <img class="bg-img" src="image_b34532.jpg" alt="台灣銀行" onerror="this.style.display='none'">
+      <img class="bg-img" src="銀行.jpg" alt="銀行" onerror="this.style.display='none'">
     </div>
 
-    <!-- 格子 7：烘焙坊 -->
+    <!-- 格子 7：麵包店 -->
     <div class="cell" data-index="7">
-      <img class="bg-img" src="image_2a6920.jpg" alt="烘焙坊" onerror="this.style.display='none'">
+      <img class="bg-img" src="麵包店.jpg" alt="麵包店" onerror="this.style.display='none'">
     </div>
 
     <!-- 格子 8（右下）：星星 -->
