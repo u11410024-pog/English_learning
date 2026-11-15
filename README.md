@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>九宮格圈圈叉叉遊戲</title>
+  <title>猜拳九宮格圈圈叉叉</title>
   <style>
     * {
       box-sizing: border-box;
@@ -24,19 +24,66 @@
     }
 
     h1 {
-      margin-bottom: 10px;
-      font-size: 2rem;
+      margin-bottom: 12px;
+      font-size: 1.9rem;
       color: #2c3e50;
     }
 
-    .status {
-      font-size: 1.25rem;
-      font-weight: bold;
-      margin-bottom: 20px;
-      padding: 8px 20px;
+    /* 狀態與猜拳控制區 */
+    .control-panel {
       background-color: #fff;
-      border-radius: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 15px 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+      text-align: center;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .status {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #2c3e50;
+    }
+
+    .rps-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .rps-btn {
+      flex: 1;
+      padding: 12px 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+
+    .rps-btn:active {
+      transform: scale(0.96);
+    }
+
+    .rps-btn.o-win {
+      background-color: #2ecc71;
+      box-shadow: 0 4px 0 #27ae60;
+    }
+
+    .rps-btn.x-win {
+      background-color: #ff4757;
+      box-shadow: 0 4px 0 #c0392b;
+    }
+
+    .rps-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      box-shadow: none;
     }
 
     /* 九宮格容器 */
@@ -49,6 +96,16 @@
       padding: 10px;
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      transition: opacity 0.25s ease;
+    }
+
+    /* 尚未猜拳決定贏家時，棋盤鎖定狀態 */
+    .board.locked {
+      opacity: 0.7;
+    }
+
+    .board.locked .cell:not(.taken) {
+      cursor: not-allowed;
     }
 
     /* 單一格子 */
@@ -64,8 +121,9 @@
       transition: transform 0.15s ease;
     }
 
-    .cell:hover:not(.taken) {
+    .board:not(.locked) .cell:hover:not(.taken) {
       transform: scale(1.03);
+      box-shadow: 0 0 0 3px #f1c40f;
     }
 
     /* 背景圖片設定 */
@@ -113,11 +171,11 @@
     }
 
     .mark.o {
-      color: #2ecc71; /* 綠色圈圈 */
+      color: #2ecc71;
     }
 
     .mark.x {
-      color: #ff4757; /* 紅色叉叉 */
+      color: #ff4757;
     }
 
     /* 連線獲勝高亮 */
@@ -132,9 +190,9 @@
 
     /* 重新開始按鈕 */
     .restart-btn {
-      margin-top: 25px;
+      margin-top: 22px;
       padding: 12px 30px;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: bold;
       color: #fff;
       background-color: #3498db;
@@ -164,10 +222,17 @@
 </head>
 <body>
 
-  <h1>九宮格圈圈叉叉</h1>
-  <div class="status" id="status">輪到玩家：<span style="color:#2ecc71;">O</span></div>
+  <h1>剪刀石頭布・九宮格</h1>
 
-  <div class="board" id="board">
+  <div class="control-panel">
+    <div class="status" id="status">✊✌️🖐️ 請先猜拳，點選本回合贏家：</div>
+    <div class="rps-buttons">
+      <button class="rps-btn o-win" id="btnOWin">O 猜拳贏了</button>
+      <button class="rps-btn x-win" id="btnXWin">X 猜拳贏了</button>
+    </div>
+  </div>
+
+  <div class="board locked" id="board">
     <!-- 格子 0：全聯 -->
     <div class="cell" data-index="0">
       <img class="bg-img" src="全聯.jpg" alt="全聯" onerror="this.style.display='none'">
@@ -192,15 +257,10 @@
     <div class="cell special-cell" data-index="4">
       <div class="special-icon">
         <svg width="70" height="70" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <!-- 盤子 -->
           <ellipse cx="50" cy="82" rx="42" ry="10" fill="#e0e0e0" stroke="#bdbdbd" stroke-width="2"/>
-          <!-- 蛋糕體（切片三角形） -->
           <polygon points="20,45 80,55 80,78 20,68" fill="#ffe0b2" stroke="#d84315" stroke-width="2"/>
-          <!-- 蛋糕頂部奶油 -->
           <polygon points="20,45 55,30 80,55" fill="#fff8e1" stroke="#d84315" stroke-width="2"/>
-          <!-- 中間草莓夾層 -->
           <line x1="20" y1="56" x2="80" y2="66" stroke="#ff5252" stroke-width="4"/>
-          <!-- 頂部草莓 -->
           <circle cx="52" cy="36" r="7" fill="#e53935"/>
           <path d="M48,30 Q52,25 56,30" stroke="#43a047" stroke-width="2.5" fill="none"/>
         </svg>
@@ -235,14 +295,17 @@
     </div>
   </div>
 
-  <button class="restart-btn" id="restartBtn">重新開始遊戲</button>
+  <button class="restart-btn" id="restartBtn">重新開始整局遊戲</button>
 
   <script>
+    const board = document.getElementById('board');
     const cells = document.querySelectorAll('.cell');
     const statusText = document.getElementById('status');
+    const btnOWin = document.getElementById('btnOWin');
+    const btnXWin = document.getElementById('btnXWin');
     const restartBtn = document.getElementById('restartBtn');
 
-    let currentPlayer = 'O';
+    let roundWinner = null; // null 代表還沒猜拳，'O' 或 'X' 代表這回合的贏家
     let gameState = ['', '', '', '', '', '', '', '', ''];
     let gameActive = true;
 
@@ -257,21 +320,34 @@
       [2, 4, 6]
     ];
 
+    // 選擇本回合猜拳贏家
+    function selectRoundWinner(player) {
+      if (!gameActive) return;
+      roundWinner = player;
+      board.classList.remove('locked');
+      btnOWin.disabled = true;
+      btnXWin.disabled = true;
+
+      const color = player === 'O' ? '#2ecc71' : '#ff4757';
+      statusText.innerHTML = `👉 請 <span style="color:${color}; font-size:1.4rem;">${player}</span> 點選一格放上標記！`;
+    }
+
+    // 點擊九宮格放上標記
     function handleCellClick(e) {
       const cell = e.currentTarget;
       const index = parseInt(cell.getAttribute('data-index'));
 
-      if (gameState[index] !== '' || !gameActive) {
+      // 如果還沒猜拳決定贏家、格子已被佔領、或遊戲已結束，則不動作
+      if (!roundWinner || gameState[index] !== '' || !gameActive) {
         return;
       }
 
-      gameState[index] = currentPlayer;
+      gameState[index] = roundWinner;
       cell.classList.add('taken');
 
-      // 建立 O 或 X 標記疊加在圖片上方
       const mark = document.createElement('div');
-      mark.classList.add('mark', currentPlayer.toLowerCase());
-      mark.textContent = currentPlayer;
+      mark.classList.add('mark', roundWinner.toLowerCase());
+      mark.textContent = roundWinner;
       cell.appendChild(mark);
 
       checkResult();
@@ -291,29 +367,42 @@
       }
 
       if (roundWon) {
-        const color = currentPlayer === 'O' ? '#2ecc71' : '#ff4757';
-        statusText.innerHTML = `🎉 玩家 <span style="color:${color};">${currentPlayer}</span> 獲勝！`;
+        const color = roundWinner === 'O' ? '#2ecc71' : '#ff4757';
+        statusText.innerHTML = `🎉 恭喜 <span style="color:${color}; font-size:1.4rem;">${roundWinner}</span> 連線獲勝！`;
         gameActive = false;
+        roundWinner = null;
+        board.classList.remove('locked');
+        btnOWin.disabled = true;
+        btnXWin.disabled = true;
         winningCombo.forEach(idx => cells[idx].classList.add('win'));
         return;
       }
 
       if (!gameState.includes('')) {
-        statusText.textContent = '🤝 雙方平手！';
+        statusText.textContent = '🤝 格子全滿，雙方平手！';
         gameActive = false;
+        roundWinner = null;
+        btnOWin.disabled = true;
+        btnXWin.disabled = true;
         return;
       }
 
-      currentPlayer = currentPlayer === 'O' ? 'X' : 'O';
-      const nextColor = currentPlayer === 'O' ? '#2ecc71' : '#ff4757';
-      statusText.innerHTML = `輪到玩家：<span style="color:${nextColor};">${currentPlayer}</span>`;
+      // 放完一格後，重置為等待下一輪猜拳狀態
+      roundWinner = null;
+      board.classList.add('locked');
+      btnOWin.disabled = false;
+      btnXWin.disabled = false;
+      statusText.textContent = '✊✌️🖐️ 下一回合！請先猜拳再點選贏家：';
     }
 
     function restartGame() {
-      currentPlayer = 'O';
+      roundWinner = null;
       gameState = ['', '', '', '', '', '', '', '', ''];
       gameActive = true;
-      statusText.innerHTML = '輪到玩家：<span style="color:#2ecc71;">O</span>';
+      board.classList.add('locked');
+      btnOWin.disabled = false;
+      btnXWin.disabled = false;
+      statusText.textContent = '✊✌️🖐️ 請先猜拳，點選本回合贏家：';
 
       cells.forEach(cell => {
         cell.classList.remove('taken', 'win');
@@ -324,6 +413,8 @@
       });
     }
 
+    btnOWin.addEventListener('click', () => selectRoundWinner('O'));
+    btnXWin.addEventListener('click', () => selectRoundWinner('X'));
     cells.forEach(cell => cell.addEventListener('click', handleCellClick));
     restartBtn.addEventListener('click', restartGame);
   </script>
